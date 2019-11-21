@@ -1,4 +1,4 @@
-[![Build Status](https://stenrosendahl0473.visualstudio.com/Space%20Game%20-%20web%20-%20Workflow/_apis/build/status/mslearn-tailspin-spacegame-web?branchName=master)](https://stenrosendahl0473.visualstudio.com/Space%20Game%20-%20web%20-%20Workflow/_build/latest?definitionId=3&branchName=master)
+[![Build Status](https://stenrosendahl0473.visualstudio.com/Space%20Game%20-%20web%20-%20Workflow/_apis/build/status/mslearn-tailspin-spacegame-web?branchName=master)](https://stenrosendahl0473.visualstudio.com/Space%20Game%20-%20web%20-%20Workflow/_build/latest?definitionId=3&branchName=master)[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=space-game-web-1959)
 
 # Contributing
 
