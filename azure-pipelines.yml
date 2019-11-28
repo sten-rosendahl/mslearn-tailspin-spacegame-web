@@ -3,13 +3,13 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-16.04'
-#  demands:
-#    - npm
+  demands:
+    - npm
 
 variables:
   buildConfiguration: 'Release'
   wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
-  dotnetSdkVersion: '2.1.505'
+  dotnetSdkVersion: '3.0.101'
 
 steps:
 - task: DotNetCoreInstaller@0
@@ -19,7 +19,7 @@ steps:
 
 - task: NuGetToolInstaller@0
   inputs:
-    versionSpec: '4.7.1' 
+    versionSpec: '5.3.1' 
 
 - task: Npm@1
   displayName: 'Run npm install'
