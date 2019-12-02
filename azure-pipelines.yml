@@ -2,14 +2,14 @@ trigger:
 - '*'
 
 pool:
-  vmImage: 'Space Game - web - Agent/MyAgentPool'
-  demands:
+  vmImage: 'MyAgentPool'
+    demands:
     - npm
 
 variables:
   buildConfiguration: 'Release'
   wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
-  dotnetSdkVersion: '2.1.505'
+  dotnetSdkVersion: '3.0.101'
 
 steps:
 - task: DotNetCoreInstaller@0
