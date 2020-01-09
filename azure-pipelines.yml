@@ -17,10 +17,10 @@ steps:
 - task: Cache@2
   condition: eq(variables['usePipelineCaching'], true)
   inputs:
-    key: 'nuget | "$(Agent.OS)" | "packages.lock.json"'
+    key: 'nuget2 | "$(Agent.OS)" | "Tailspin.SpaceGame.Web/packages/packages.lock.json"'
     restoreKeys: |
-      nuget | "$(Agent.OS)"
-      nuget
+      nuget2 | "$(Agent.OS)"
+      nuget2
     path: $(NUGET_PACKAGES)
     cacheHitVar: NUGET_CACHE_RESTORED
     verbose: true
@@ -48,7 +48,7 @@ steps:
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
-  condition: ne(variables['NUGET_CACHE_RESTORED'], true)
+  #condition: ne(variables['NUGET_CACHE_RESTORED'], true) # task required to recreate proejct
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
