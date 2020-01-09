@@ -53,7 +53,7 @@ steps:
     command: 'restore'
     projects: '**/*.csproj'
     feedsToUse: 'select'
-    vstsFeed: 'NuGetOrgProxy'
+    vstsFeed: 'Pipelines Demo/NuGetOrgProxy'
     includeNuGetOrg: false
     #feedsToUse: 'config'
     #nugetConfigPath: ./Tailspin.SpaceGame.Web/nuget.config
