@@ -13,15 +13,15 @@ variables:
   NUGET_PACKAGES: $(Pipeline.Workspace)/Tailspin.SpaceGame.Web/packages
 
 steps:
-- task: Cache@2
-  inputs:
-    key: 'nuget | "$(Agent.OS)" | packages.lock.json'
-    restoreKeys: |
-       nuget | "$(Agent.OS)"
-       nuget
-    path: $(NUGET_PACKAGES)
-    cacheHitVar: NUGET_CACHE_RESTORED
-  displayName: Cache NuGet packages
+#- task: Cache@2
+#  inputs:
+#    key: 'nuget | "$(Agent.OS)" | packages.lock.json'
+#    restoreKeys: |
+#       nuget | "$(Agent.OS)"
+#       nuget
+#    path: $(NUGET_PACKAGES)
+#    cacheHitVar: NUGET_CACHE_RESTORED
+#  displayName: Cache NuGet packages
 
 - task: DotNetCoreInstaller@0
   displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
