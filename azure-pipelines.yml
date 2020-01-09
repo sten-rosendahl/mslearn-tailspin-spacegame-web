@@ -10,7 +10,7 @@ variables:
   buildConfiguration: 'Release'
   wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
   dotnetSdkVersion: '2.1.505'
-  usePipelineCaching: true
+  usePipelineCaching: false
   NUGET_PACKAGES: $(Pipeline.Workspace)/Tailspin.SpaceGame.Web/packages
 
 steps:
@@ -52,6 +52,9 @@ steps:
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
+    feedsToUse: 'select'
+    vstsFeed: 'NuGetOrgProxy'
+    includeNuGetOrg: true
     #feedsToUse: 'config'
     #nugetConfigPath: ./Tailspin.SpaceGame.Web/nuget.config
 
