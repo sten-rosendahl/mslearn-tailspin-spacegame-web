@@ -48,7 +48,7 @@ steps:
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
-  #condition: ne(variables['NUGET_CACHE_RESTORED'], true) # task required to recreate proejct
+  #condition: ne(variables['NUGET_CACHE_RESTORED'], true) # task required to recreate project.assets.json
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
@@ -57,6 +57,7 @@ steps:
     includeNuGetOrg: false
     #feedsToUse: 'config'
     #nugetConfigPath: ./Tailspin.SpaceGame.Web/nuget.config
+    verbose: true
 
 - task: DotNetCoreCLI@2
   displayName: 'Build the project - $(buildConfiguration)'
