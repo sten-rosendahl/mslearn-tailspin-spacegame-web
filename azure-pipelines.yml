@@ -10,8 +10,19 @@ variables:
   buildConfiguration: 'Release'
   wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
   dotnetSdkVersion: '2.1.505'
+  NUGET_PACKAGES: $(Pipeline.Workspace)/Tailspin.SpaceGame.Web/packages
 
 steps:
+- task: Cache@2
+  inputs:
+    key: 'nuget | "$(Agent.OS)" | packages.lock.json'
+    restoreKeys: |
+       nuget | "$(Agent.OS)"
+       nuget
+    path: $(NUGET_PACKAGES)
+    cacheHitVar: NUGET_CACHE_RESTORED
+  displayName: Cache NuGet packages
+
 - task: DotNetCoreInstaller@0
   displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
   inputs:
@@ -34,13 +45,12 @@ steps:
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore project dependencies'
+  condition: ne(variables.NUGET_CACHE_RESTORED, 'true')
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
-    feedsToUse: 'config'
-    nugetConfigPath: ./Tailspin.SpaceGame.Web/nuget.config
-    #externalFeedCredentials: # Optional
-    noCache: false
+    #feedsToUse: 'config'
+    #nugetConfigPath: ./Tailspin.SpaceGame.Web/nuget.config
 
 - task: DotNetCoreCLI@2
   displayName: 'Build the project - $(buildConfiguration)'
