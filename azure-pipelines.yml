@@ -37,6 +37,10 @@ steps:
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
+    feedsToUse: 'config'
+    nugetConfigPath: ./Tailspin.SpaceGame.Web/nuget.config
+    #externalFeedCredentials: # Optional
+    noCache: false
 
 - task: DotNetCoreCLI@2
   displayName: 'Build the project - $(buildConfiguration)'
