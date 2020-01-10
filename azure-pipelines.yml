@@ -69,6 +69,11 @@ steps:
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
 
+- task: WhiteSource Bolt@19
+  displayName: 'Open source scanning - WhiteSource Bolt'
+  inputs:
+    advance: true
+    
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
   inputs:
