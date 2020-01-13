@@ -10,7 +10,7 @@ variables:
   buildConfiguration: 'Release'
   wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
   dotnetSdkVersion: '2.1.505'
-  usePipelineCaching: false
+  usePipelineCaching: true
   NUGET_PACKAGES: $(Pipeline.Workspace)/Tailspin.SpaceGame.Web/packages
 
 steps:
