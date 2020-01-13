@@ -17,7 +17,7 @@ steps:
 - task: Cache@2
   condition: eq(variables['usePipelineCaching'], true)
   inputs:
-    key: 'nuget2 | "$(Agent.OS)" | "Tailspin.SpaceGame.Web/packages/packages.lock.json"'
+    key: 'nuget2 | "$(Agent.OS)" | "Tailspin.SpaceGame.Web/packages.lock.json"'
     restoreKeys: |
       nuget2 | "$(Agent.OS)"
       nuget2
