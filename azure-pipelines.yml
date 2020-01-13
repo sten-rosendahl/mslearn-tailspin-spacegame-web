@@ -60,6 +60,7 @@ steps:
     includeNuGetOrg: false
     #feedsToUse: 'config'
     #nugetConfigPath: ./Tailspin.SpaceGame.Web/nuget.config
+    restoreDirectory: $(NUGET_PACKAGES)
     verbose: true
 
 - task: DotNetCoreCLI@2
