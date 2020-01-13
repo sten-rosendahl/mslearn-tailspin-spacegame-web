@@ -73,7 +73,7 @@ steps:
   displayName: 'Open source scanning - WhiteSource Bolt'
   inputs:
     advance: true
-    extraFolders: 'packages Tailspin.SpaceGame.Web'
+    extraFolders: 'Tailspin.SpaceGame.Web Tailspin.SpaceGame.Web/packages'
     
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
