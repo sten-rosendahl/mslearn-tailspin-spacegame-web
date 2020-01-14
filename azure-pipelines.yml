@@ -12,7 +12,7 @@ variables:
   dotnetSdkVersion: '2.1.505'
   usePipelineCaching: true
   useOpenSourceScanning: true
-  NUGET_PACKAGES: $(System.DefaultWorkingDirectory)Tailspin.SpaceGame.Web/packages
+  NUGET_PACKAGES: $(System.DefaultWorkingDirectory)/Tailspin.SpaceGame.Web/packages
   NPM_MODULES: $(System.DefaultWorkingDirectory)/node_modules
 
 steps:
