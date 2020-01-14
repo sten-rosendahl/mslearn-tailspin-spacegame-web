@@ -57,7 +57,8 @@ steps:
   displayName: 'Compile Sass assets'
 
 - task: gulp@1
-  displayName: 'Run gulp tasPM
+  displayName: 'Run gulp task'
+
 - script: 'echo "$(Build.DefinitionName), $(Build.Buan index file?ldNumber)" > buildinfo.txt'
   displayName: 'Write build info'
   workingDirectory: $(wwwrootDir)
