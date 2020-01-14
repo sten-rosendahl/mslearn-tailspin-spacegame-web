@@ -8,11 +8,11 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-  wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
+  wwwrootDir: '$(System.DefaultWorkingDirectory)/Tailspin.SpaceGame.Web/wwwroot'
   dotnetSdkVersion: '2.1.505'
   usePipelineCaching: true
-  NUGET_PACKAGES: packages
-  NPM_MODULES: node_modules
+  NUGET_PACKAGES: $(System.DefaultWorkingDirectory)Tailspin.SpaceGame.Web/packages
+  NPM_MODULES: $(System.DefaultWorkingDirectory)/node_modules
 
 steps:
 - task: Cache@2
@@ -46,7 +46,7 @@ steps:
 
 - task: Npm@1
   displayName: 'Run npm install'
-  #condition: ne(variables['NPM_CACHE_RESTORED'], true) # task required to recreate an index file?
+  condition: ne(variables['NPM_CACHE_RESTORED'], true)
   inputs:
     customRegistry: 'useFeed'
     customFeed: 'Pipelines Demo/ExternalProxies'
@@ -64,7 +64,7 @@ steps:
   workingDirectory: $(wwwrootDir)
 
 - task: DotNetCoreCLI@2
-  displayName: 'Restore project dependencies'
+  displayName: 'Restore NuGet dependencies'
   #condition: ne(variables['NUGET_CACHE_RESTORED'], true) # task required to recreate project.assets.json
   inputs:
     command: 'restore'
@@ -73,7 +73,7 @@ steps:
     vstsFeed: 'Pipelines Demo/ExternalProxies'
     includeNuGetOrg: false
     #feedsToUse: 'config'
-    nugetConfigPath: ./Tailspin.SpaceGame.Web/nuget.config
+    nugetConfigPath: $(System.DefaultWorkingDirectory)/Tailspin.SpaceGame.Web/nuget.config
     restoreDirectory: $(NUGET_PACKAGES)
     verbose: true
 
