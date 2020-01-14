@@ -19,7 +19,7 @@ steps:
   displayName: Cache NuGet packages
   condition: eq(variables['usePipelineCaching'], true)
   inputs:
-    key: 'nuget3 | "$(Agent.OS)" | packages.lock.json'
+    key: 'nuget3 | "$(Agent.OS)" | "packages.lock.json"'
     restoreKeys: |
       nuget3 | "$(Agent.OS)"
       nuget3
@@ -31,7 +31,7 @@ steps:
   displayName: Cache npm modules
   condition: eq(variables['usePipelineCaching'], true)
   inputs:
-    key: 'npm | "$(Agent.OS)" | packages.lock.json'
+    key: 'npm | "$(Agent.OS)" | "package-lock.json"'
     restoreKeys: |
       npm | "$(Agent.OS)"
       npm
