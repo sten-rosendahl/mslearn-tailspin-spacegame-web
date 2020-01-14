@@ -11,6 +11,7 @@ variables:
   wwwrootDir: '$(System.DefaultWorkingDirectory)/Tailspin.SpaceGame.Web/wwwroot'
   dotnetSdkVersion: '2.1.505'
   usePipelineCaching: true
+  useOpenSourceScanning: true
   NUGET_PACKAGES: $(System.DefaultWorkingDirectory)Tailspin.SpaceGame.Web/packages
   NPM_MODULES: $(System.DefaultWorkingDirectory)/node_modules
 
@@ -85,12 +86,13 @@ steps:
     projects: '**/*.csproj'
     verbose: true
 
-#- task: WhiteSource Bolt@19
-#  displayName: 'Open source scanning - WhiteSource Bolt'
-#  inputs:
-#    advance: true
-#    extraFolders: '$(NUGET_PACKAGES) $(NPM_MODULES)'
-#    verbose: true
+- task: WhiteSource Bolt@19
+  displayName: 'Open source scanning - WhiteSource Bolt'
+  condition: eq(variables['useOpenSourceScanning'], true)
+  inputs:
+    advance: true
+    extraFolders: '$(NUGET_PACKAGES) $(NPM_MODULES)'
+    verbose: true
     
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
