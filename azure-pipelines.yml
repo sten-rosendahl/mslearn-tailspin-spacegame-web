@@ -12,19 +12,32 @@ variables:
   dotnetSdkVersion: '2.1.505'
   usePipelineCaching: true
   NUGET_PACKAGES: $(Pipeline.Workspace)/Tailspin.SpaceGame.Web/packages
-  NPM_MODULES: $(Pipeline.Workspace)/Tailspin.SpaceGame.Web/node_modules
+  NPM_MODULES: $(Pipeline.Workspace)/node_modules
 
 steps:
 - task: Cache@2
   displayName: Cache NuGet packages
   condition: eq(variables['usePipelineCaching'], true)
   inputs:
-    key: 'nuget2 | "$(Agent.OS)" | "packages.lock.json"'
+    key: 'nuget3 | "$(Agent.OS)" | "packages.lock.json"'
     restoreKeys: |
-      nuget2 | "$(Agent.OS)"
-      nuget2
+      nuget3 | "$(Agent.OS)"
+      nuget3
     path: $(NUGET_PACKAGES)
     cacheHitVar: NUGET_CACHE_RESTORED
+    verbose: true
+
+steps:
+- task: Cache@2
+  displayName: Cache npm modules
+  condition: eq(variables['usePipelineCaching'], true)
+  inputs:
+    key: 'npm | "$(Agent.OS)" | "packages.lock.json"'
+    restoreKeys: |
+      npm | "$(Agent.OS)"
+      npm
+    path: $(NPM_MODULES)
+    cacheHitVar: NPM_CACHE_RESTORED
     verbose: true
 
 - task: DotNetCoreInstaller@0
@@ -34,8 +47,9 @@ steps:
 
 - task: Npm@1
   displayName: 'Run npm install'
+  #condition: ne(variables['NPM_CACHE_RESTORED'], true) # task required to recreate an index file?
   inputs:
-    customRegistry: 'useFeed' # Optional. Options: useNpmrc, useFeed
+    customRegistry: 'useFeed'
     customFeed: 'Pipelines Demo/ExternalProxies'
     #customRegistry: 'useNpmrc' # good option to use the same
     verbose: true
@@ -44,9 +58,8 @@ steps:
   displayName: 'Compile Sass assets'
 
 - task: gulp@1
-  displayName: 'Run gulp tasks'
-
-- script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
+  displayName: 'Run gulp tasPM
+- script: 'echo "$(Build.DefinitionName), $(Build.Buan index file?ldNumber)" > buildinfo.txt'
   displayName: 'Write build info'
   workingDirectory: $(wwwrootDir)
 
@@ -72,12 +85,12 @@ steps:
     projects: '**/*.csproj'
     verbose: true
 
-- task: WhiteSource Bolt@19
-  displayName: 'Open source scanning - WhiteSource Bolt'
-  inputs:
-    advance: true
-    extraFolders: 'Tailspin.SpaceGame.Web $(NUGET_PACKAGES)'
-    verbose: true
+#- task: WhiteSource Bolt@19
+#  displayName: 'Open source scanning - WhiteSource Bolt'
+#  inputs:
+#    advance: true
+#    extraFolders: '$(NUGET_PACKAGES) $(NPM_MODULES)'
+#    verbose: true
     
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
