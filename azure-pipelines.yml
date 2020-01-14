@@ -27,7 +27,6 @@ steps:
     cacheHitVar: NUGET_CACHE_RESTORED
     verbose: true
 
-steps:
 - task: Cache@2
   displayName: Cache npm modules
   condition: eq(variables['usePipelineCaching'], true)
