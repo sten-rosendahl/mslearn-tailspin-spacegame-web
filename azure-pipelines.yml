@@ -12,19 +12,20 @@ variables:
   dotnetSdkVersion: '2.1.505'
   usePipelineCaching: true
   NUGET_PACKAGES: $(Pipeline.Workspace)/Tailspin.SpaceGame.Web/packages
+  NPM_MODULES: $(Pipeline.Workspace)/Tailspin.SpaceGame.Web/node_modules
 
 steps:
 - task: Cache@2
+  displayName: Cache NuGet packages
   condition: eq(variables['usePipelineCaching'], true)
   inputs:
-    key: 'nuget2 | "$(Agent.OS)" | "Tailspin.SpaceGame.Web/packages.lock.json"'
+    key: 'nuget2 | "$(Agent.OS)" | "packages.lock.json"'
     restoreKeys: |
       nuget2 | "$(Agent.OS)"
       nuget2
     path: $(NUGET_PACKAGES)
     cacheHitVar: NUGET_CACHE_RESTORED
     verbose: true
-  displayName: Cache NuGet packages
 
 - task: DotNetCoreInstaller@0
   displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
@@ -59,7 +60,7 @@ steps:
     vstsFeed: 'Pipelines Demo/ExternalProxies'
     includeNuGetOrg: false
     #feedsToUse: 'config'
-    #nugetConfigPath: ./Tailspin.SpaceGame.Web/nuget.config
+    nugetConfigPath: ./Tailspin.SpaceGame.Web/nuget.config
     restoreDirectory: $(NUGET_PACKAGES)
     verbose: true
 
@@ -69,12 +70,14 @@ steps:
     command: 'build'
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
+    verbose: true
 
 - task: WhiteSource Bolt@19
   displayName: 'Open source scanning - WhiteSource Bolt'
   inputs:
     advance: true
     extraFolders: 'Tailspin.SpaceGame.Web $(NUGET_PACKAGES)'
+    verbose: true
     
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
