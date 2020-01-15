@@ -20,10 +20,10 @@ steps:
   displayName: Cache NuGet packages
   condition: eq(variables['usePipelineCaching'], true)
   inputs:
-    key: 'nuget3 | "$(Agent.OS)" | "packages.lock.json"'
+    key: 'nuget4 | "$(Agent.OS)" | "packages.lock.json"'
     restoreKeys: |
-      nuget3 | "$(Agent.OS)"
-      nuget3
+      nuget4 | "$(Agent.OS)"
+      nuget4
     path: $(NUGET_PACKAGES)
     cacheHitVar: NUGET_CACHE_RESTORED
     verbose: true
