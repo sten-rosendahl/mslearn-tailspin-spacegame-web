@@ -11,7 +11,7 @@ variables:
   wwwrootDir: '$(System.DefaultWorkingDirectory)/Tailspin.SpaceGame.Web/wwwroot'
   dotnetSdkVersion: '2.1.505'
   usePipelineCaching: true
-  useOpenSourceScanning: false
+  useOpenSourceScanning: true
   NUGET_PACKAGES: $(System.DefaultWorkingDirectory)/Tailspin.SpaceGame.Web/packages
   NPM_MODULES: $(System.DefaultWorkingDirectory)/node_modules
 
