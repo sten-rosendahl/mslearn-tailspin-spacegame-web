@@ -92,7 +92,7 @@ steps:
     command: 'test'
     arguments: '--no-build --configuration $(buildConfiguration)'
     publishTestResults: true
-    projects: '**/*.Tests.csproj
+    projects: '**/*.Tests.csproj'
 
 - task: WhiteSource Bolt@19
   displayName: 'Open source scanning - WhiteSource Bolt'
