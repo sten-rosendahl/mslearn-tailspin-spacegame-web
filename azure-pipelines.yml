@@ -111,6 +111,12 @@ steps:
     codeCoverageTool: 'cobertura'
     summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
 
+#- task: Security static source code analysis@88
+#  inputs:
+#    projectName: 'myproj'
+#    preset: 'OWASP TOP 10 - 2017'
+#    incScan: true
+
 - task: WhiteSource Bolt@19
   displayName: 'Open source scanning - WhiteSource Bolt'
   condition: eq(variables['useOpenSourceScanning'], true)
