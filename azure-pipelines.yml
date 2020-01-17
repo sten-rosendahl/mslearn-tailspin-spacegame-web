@@ -11,6 +11,7 @@ variables:
   wwwrootDir: '$(System.DefaultWorkingDirectory)/Tailspin.SpaceGame.Web/wwwroot'
   dotnetSdkVersion: '2.1.505'
   usePipelineCaching: true
+  useStaticSecurityScanning: true
   useOpenSourceScanning: true
   NUGET_PACKAGES: $(System.DefaultWorkingDirectory)/Tailspin.SpaceGame.Web/packages
   NPM_MODULES: $(System.DefaultWorkingDirectory)/node_modules
@@ -116,6 +117,28 @@ steps:
 #    projectName: 'myproj'
 #    preset: 'OWASP TOP 10 - 2017'
 #    incScan: true
+
+- task: Security static source code analysis@88
+  condition: eq(variables['useStaticSecurityScanning'], true)
+    inputs:
+    projectName: 'mslearn-tailspin-spacegame-web'
+    preset: 'All'
+    fullTeamName: 'CxServer\SP\Company\Users'
+    incScan: true
+    scanTimeout: '10'
+    denyProject: true
+    comment: 'Source code security scan'
+    high: '0'
+    medium: '5'
+    low: '10'
+    osaEnabled: true
+    osaFolderExclusions: '.git'
+    osaFileExclusions: '*.cs,!*.json'
+    osaArchiveInclude: '*.zip, *.war, *.ear, *.tgz, *.jar, *.egg'
+    osaVulnerabilityThreshold: true
+    osaHigh: '0'
+    osaMedium: '5'
+    osaLow: '10'
 
 - task: WhiteSource Bolt@19
   displayName: 'Open source scanning - WhiteSource Bolt'
