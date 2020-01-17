@@ -112,12 +112,6 @@ steps:
     codeCoverageTool: 'cobertura'
     summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
 
-#- task: Security static source code analysis@88
-#  inputs:
-#    projectName: 'myproj'
-#    preset: 'OWASP TOP 10 - 2017'
-#    incScan: true
-
 - task: Security static source code analysis@88
   condition: eq(variables['useStaticSecurityScanning'], true)
     inputs:
