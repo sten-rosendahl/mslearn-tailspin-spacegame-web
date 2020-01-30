@@ -27,7 +27,6 @@ steps:
       nuget4
     path: $(NUGET_PACKAGES)
     cacheHitVar: NUGET_CACHE_RESTORED
-    verbose: true
 
 - task: Cache@2
   displayName: Cache npm modules
@@ -39,7 +38,6 @@ steps:
       npm
     path: $(NPM_MODULES)
     cacheHitVar: NPM_CACHE_RESTORED
-    verbose: true
 
 - task: DotNetCoreInstaller@0
   displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
@@ -77,7 +75,6 @@ steps:
     #feedsToUse: 'config'
     nugetConfigPath: $(System.DefaultWorkingDirectory)/Tailspin.SpaceGame.Web/nuget.config
     restoreDirectory: $(NUGET_PACKAGES)
-    verbose: true
 
 - task: DotNetCoreCLI@2
   displayName: 'Build the project - $(buildConfiguration)'
@@ -85,7 +82,6 @@ steps:
     command: 'build'
     arguments: '--no-restore --configuration $(buildConfiguration)'
     projects: '**/*.csproj'
-    verbose: true
 
 - task: DotNetCoreCLI@2
   displayName: 'Install ReportGenerator'
@@ -114,9 +110,10 @@ steps:
 
 - task: Security static source code analysis@88
   condition: eq(variables['useStaticSecurityScanning'], true)
-    inputs:
+  inputs:
     projectName: 'mslearn-tailspin-spacegame-web'
     preset: 'All'
+    CheckmarxService: 'myserver'
     fullTeamName: 'CxServer\SP\Company\Users'
     incScan: true
     scanTimeout: '10'
@@ -140,7 +137,6 @@ steps:
   inputs:
     advance: true
     extraFolders: '$(NUGET_PACKAGES) $(NPM_MODULES)'
-    verbose: true
     
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
