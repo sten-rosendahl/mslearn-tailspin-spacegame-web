@@ -113,7 +113,6 @@ steps:
   inputs:
     projectName: 'mslearn-tailspin-spacegame-web'
     preset: 'All'
-    CheckmarxService: 'myservice'
     fullTeamName: 'CxServer\SP\Company\Users'
     incScan: true
     scanTimeout: '10'
