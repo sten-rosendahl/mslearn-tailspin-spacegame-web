@@ -107,35 +107,19 @@ steps:
   inputs:
     codeCoverageTool: 'cobertura'
     summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
-
-- task: Security static source code analysis@88
+- task: CmdLine@2
+  displayName: 'Security static source code analysis'
   condition: eq(variables['useStaticSecurityScanning'], true)
   inputs:
-    projectName: 'mslearn-tailspin-spacegame-web'
-    preset: 'All'
-    fullTeamName: 'CxServer\SP\Company\Users'
-    incScan: true
-    scanTimeout: '10'
-    denyProject: true
-    comment: 'Source code security scan'
-    high: '0'
-    medium: '5'
-    low: '10'
-    osaEnabled: true
-    osaFolderExclusions: '.git'
-    osaFileExclusions: '*.cs,!*.json'
-    osaArchiveInclude: '*.zip, *.war, *.ear, *.tgz, *.jar, *.egg'
-    osaVulnerabilityThreshold: true
-    osaHigh: '0'
-    osaMedium: '5'
-    osaLow: '10'
+    script: |
+      echo Hello world
 
-- task: WhiteSource Bolt@19
-  displayName: 'Open source scanning - WhiteSource Bolt'
+- task: CmdLine@2
+  displayName: 'Open source scanning'
   condition: eq(variables['useOpenSourceScanning'], true)
   inputs:
-    advance: true
-    extraFolders: '$(NUGET_PACKAGES) $(NPM_MODULES)'
+    script: |
+      echo Hello world
     
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
