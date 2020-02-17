@@ -1,0 +1,28 @@
+# Terraform CD pipeline template
+
+parameters:
+  # unique name of the job
+  job_name: deploy_terraform
+  # friendly name of the job
+  display_name: Deploy app components with Terraform
+  # name of target enviroment deploying to (mandatory)
+  target_environment: ''
+  # name of variable group = target enviroment (manadatory)
+  variable_group_name: ''
+
+jobs:
+- deployment: ${{ parameters.job_name }}
+  displayName: ${{ parameters.display_name }}
+  pool:
+    vmImage: 'ubuntu-latest'
+  environment: ${{ parameters.target_environment }}
+  variables:
+  - group: ${{parameters.variable_group_name}} # (list the necessary variables to be set here)
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - checkout: none
+        - download: current
+          artifact: drop
+          patterns: '**/*.sppkg'
