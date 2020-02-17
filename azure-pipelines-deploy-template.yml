@@ -11,6 +11,8 @@ parameters:
   target_environment: ''
   # name of variable group = target enviroment (manadatory)
   variable_group_name: ''
+  # Azure subscription
+  azure_subscription: 'Free Trial(4cc37679-12d4-439a-99cf-6072b19a3fee)'
 
 jobs:
 - deployment: ${{ parameters.job_name }}
@@ -31,30 +33,36 @@ jobs:
         - task: TerraformInstaller@0
           inputs:
             terraformVersion: '0.12.20'
-- task: TerraformCLI@0
-  display_name: terraform init
-  inputs:
-    command: 'init'
-    workingDirectory: '${{ parameters.terraform_working_dir }}'
-    commandOptions: '-backend-config=resource_group_name=$(RES_GRP) -backend-config=storage_account_name=$(STORAGE_ACCT) -backend-config=container_name=tf-statefiles -backend-config=key=$(state.key) -backend-config=access_key=$(ACCESS_KEY) -no-color -input=false'
-    backendType: 'azurerm'
-- task: TerraformCLI@0
-  display_name: terraform validate
-  inputs:
-    workingDirectory: '${{ parameters.terraform_working_dir }}'
-    command: 'validate'
-    commandOptions: '-check-variables=false'
-- task: TerraformCLI@0
-  display_name: terraform plan
-  inputs:
-    workingDirectory: '${{ parameters.terraform_working_dir }}'
-    command: 'plan'
-    environmentServiceName: 'Free Trial(4cc37679-12d4-439a-99cf-6072b19a3fee)'
-    commandOptions: '-out=tfplan -no-color -input=false ''
-       workingDirectory: ''$(terraform.path)'
-- task: ManualIntervention@8
-  display_name: terraform manual review
-  condition: ''
-  inputs:
-    instructions: 'Please review the Terraform preview in the pipeline logs and click Continue to approve.'
-    emailRecipients: 'sten.rosendahl@alfalaval.com'
+        - task: TerraformCLI@0
+          display_name: terraform init
+          inputs:
+            command: 'init'
+            workingDirectory: '${{ parameters.terraform_working_dir }}'
+            commandOptions: '-backend-config=resource_group_name=$(RES_GRP) -backend-config=storage_account_name=$(STORAGE_ACCT) -backend-config=container_name=tf-statefiles -backend-config=key=$(state.key) -backend-config=access_key=$(ACCESS_KEY) -no-color -input=false'
+            backendType: 'azurerm'
+        - task: TerraformCLI@0
+          display_name: terraform validate
+          inputs:
+            workingDirectory: '${{ parameters.terraform_working_dir }}'
+            command: 'validate'
+            commandOptions: '-check-variables=false'
+        - task: TerraformCLI@0
+          display_name: terraform plan
+          inputs:
+            workingDirectory: '${{ parameters.terraform_working_dir }}'
+            command: 'plan'
+            environmentServiceName: 'Free Trial(4cc37679-12d4-439a-99cf-6072b19a3fee)'
+            commandOptions: '-out=tfplan -no-color -input=false -detailed-exitcode'
+              workingDirectory: ''$(terraform.path)'
+        - task: ManualIntervention@8
+          display_name: terraform manual review
+          condition: 'and(succeeded(), eq(variables['TERRAFORM_PLAN_HAS_CHANGES'], 'true'))'
+          inputs:
+            instructions: 'Please review the Terraform preview in the pipeline logs and click Continue to approve.'
+            emailRecipients: 'sten.rosendahl@alfalaval.com'
+        - task: TerraformCLI@0
+          display_name: terraform apply
+          inputs:
+            command: 'apply'
+            environmentServiceName: 'Free Trial(4cc37679-12d4-439a-99cf-6072b19a3fee)'
+            commandOptions: '-input=false -auto-approve=true -lock=true'
