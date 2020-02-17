@@ -25,4 +25,4 @@ jobs:
         - checkout: none
         - download: current
           artifact: drop
-          patterns: '**/*.sppkg'
+          patterns: '**/*.zip'
