@@ -6,11 +6,13 @@ parameters:
   # friendly name of the job
   display_name: Deploy app components with Terraform
   # directory of main.tf (mandatory)
-  terraform_working_dir: ''
+  terraform_working_dir: './terraform'
   # name of target enviroment deploying to (mandatory)
-  target_environment: ''
+  target_environment: 'test'
   # name of variable group = target enviroment (manadatory)
-  variable_group_name: ''
+  variable_group_name: 'test'
+  # list of reviewers (mandatory)
+  email_reviewers: 'sten.rosendahl@alfalaval.com'
   # Azure subscription
   azure_subscription: 'Free Trial(4cc37679-12d4-439a-99cf-6072b19a3fee)'
 
@@ -26,43 +28,41 @@ jobs:
     runOnce:
       deploy:
         steps:
-        - checkout: none
-        - download: current
-          artifact: drop
-          patterns: '**/*.zip'
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            buildType: 'specific'
+            project: '17c7e148-5259-4c50-a78a-221a3542498f'
+            definition: '19'
+            buildVersionToDownload: 'latest'
+            artifactName: 'kalle'
+            itemPattern: '**/*.zip'
+            targetPath: '$(Pipeline.Workspace)'
         - task: TerraformInstaller@0
           inputs:
             terraformVersion: '0.12.20'
         - task: TerraformCLI@0
-          display_name: terraform init
           inputs:
             command: 'init'
             workingDirectory: '${{ parameters.terraform_working_dir }}'
             commandOptions: '-backend-config=resource_group_name=$(RES_GRP) -backend-config=storage_account_name=$(STORAGE_ACCT) -backend-config=container_name=tf-statefiles -backend-config=key=$(state.key) -backend-config=access_key=$(ACCESS_KEY) -no-color -input=false'
             backendType: 'azurerm'
         - task: TerraformCLI@0
-          display_name: terraform validate
           inputs:
             workingDirectory: '${{ parameters.terraform_working_dir }}'
             command: 'validate'
             commandOptions: '-check-variables=false'
         - task: TerraformCLI@0
-          display_name: terraform plan
           inputs:
-            workingDirectory: '${{ parameters.terraform_working_dir }}'
             command: 'plan'
-            environmentServiceName: 'Free Trial(4cc37679-12d4-439a-99cf-6072b19a3fee)'
+            environmentServiceName: '${{ parameters.azure_subscription }}'
             commandOptions: '-out=tfplan -no-color -input=false -detailed-exitcode'
-              workingDirectory: ''$(terraform.path)'
         - task: ManualIntervention@8
-          display_name: terraform manual review
-          condition: 'and(succeeded(), eq(variables['TERRAFORM_PLAN_HAS_CHANGES'], 'true'))'
           inputs:
             instructions: 'Please review the Terraform preview in the pipeline logs and click Continue to approve.'
-            emailRecipients: 'sten.rosendahl@alfalaval.com'
+            emailRecipients: '${{ parameters.email_reviewers }}'
+          condition: and(succeeded(), eq(variables['TERRAFORM_PLAN_HAS_CHANGES'], 'true'))
         - task: TerraformCLI@0
-          display_name: terraform apply
           inputs:
             command: 'apply'
-            environmentServiceName: 'Free Trial(4cc37679-12d4-439a-99cf-6072b19a3fee)'
-            commandOptions: '-input=false -auto-approve=true -lock=true'
+            environmentServiceName: '${{ parameters.azure_subscription }}'
+            commandOptions: '-input=false -auto-approve -lock=true'
