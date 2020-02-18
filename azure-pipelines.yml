@@ -136,6 +136,6 @@ steps:
 
 - task: PublishPipelineArtifact@1
   inputs:
-    path: '$(Pipeline.Workspace)/$(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
+    path: '$(Pipeline.Workspace)/$(Build.ArtifactStagingDirectory)/$(buildConfiguration)/TailSpin.SpaceGame.Web'
     artifact: 'SpaceGameWeb'
     publishLocation: 'pipeline'
