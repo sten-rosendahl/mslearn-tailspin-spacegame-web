@@ -34,8 +34,8 @@ jobs:
             project: '17c7e148-5259-4c50-a78a-221a3542498f'
             definition: '19'
             buildVersionToDownload: 'latest'
-            artifactName: 'kalle'
-            itemPattern: '**/*.zip'
+            artifactName: 'SpaceGameWeb'
+            itemPattern: '*.zip'
             targetPath: '$(Pipeline.Workspace)'
         - task: TerraformInstaller@0
           inputs:
@@ -64,5 +64,6 @@ jobs:
         - task: TerraformCLI@0
           inputs:
             command: 'apply'
-            environmentServiceName: '${{ parameters.azure_subscription }}'
+            environmentServiceName: 'parameters.azure_subscription }}'
             commandOptions: '-input=false -auto-approve -lock=true'
+          condition: succeeded()
