@@ -135,13 +135,8 @@ steps:
     modifyOutputPath: true
     zipAfterPublish: true
 
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'ls -R $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
-
 - task: PublishPipelineArtifact@1
   inputs:
-    path: '$(Pipeline.Workspace)/$(Build.ArtifactStagingDirectory)/$(buildConfiguration)/Tailspin.SpaceGame.Web/Tailspin.SpaceGame.Web.zip'
+    path: '$(Pipeline.Workspace)/$(Build.ArtifactStagingDirectory)/$(buildConfiguration)/Tailspin.SpaceGame.Web.zip'
     artifact: 'SpaceGameWeb'
     publishLocation: 'pipeline'
