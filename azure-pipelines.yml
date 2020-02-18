@@ -132,6 +132,7 @@ steps:
     projects: '**/*.csproj'
     publishWebProjects: false
     arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
+    modifyOutputPath: true
     zipAfterPublish: true
 
 - task: PublishPipelineArtifact@1
