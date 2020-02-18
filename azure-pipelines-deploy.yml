@@ -1,5 +1,13 @@
 # Sample of multi-stage CD pipeline using YAML template and Terraform plugin for deployment
 
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - azure-pipelines.yml
+
 pool:
   vmImage: 'ubuntu-latest'
 
