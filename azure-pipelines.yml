@@ -139,4 +139,3 @@ steps:
   inputs:
     path: '$(Pipeline.Workspace)/$(Build.ArtifactStagingDirectory)/$(buildConfiguration)/Tailspin.SpaceGame.Web.zip'
     artifact: 'SpaceGameWeb'
-    publishLocation: 'pipeline'
