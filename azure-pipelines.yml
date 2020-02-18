@@ -124,7 +124,7 @@ steps:
   inputs:
     script: |
       echo Hello world
-    
+
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
   inputs:
@@ -134,6 +134,8 @@ steps:
     arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
     zipAfterPublish: true
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-  condition: succeeded()
+- task: PublishPipelineArtifact@1
+  inputs:
+    path: '$(Pipeline.Workspace)/$(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
+    artifact: 'SpaceGameWeb'
+    publishLocation: 'pipeline'
