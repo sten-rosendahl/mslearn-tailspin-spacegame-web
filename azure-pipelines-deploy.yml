@@ -9,11 +9,11 @@ resources:
       - develop
       - master
 
-pool:
-  vmImage: 'ubuntu-latest'
-
 variables:
   appName: 'SpaceGameWeb'
+
+pool:
+  vmImage: 'ubuntu-latest'
 
 stages:
 - stage: 'deploytest'
