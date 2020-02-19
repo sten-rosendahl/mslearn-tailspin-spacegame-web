@@ -43,6 +43,6 @@ stages:
   jobs:
     - template: ./azure-pipelines-deploy-template.yml
       parameters:
-        job_name: deploy_solution_to_preprod
+        job_name: deploy_solution_to_prod
         target_environment: 'prod'
         variable_group_name: prod_configuration
