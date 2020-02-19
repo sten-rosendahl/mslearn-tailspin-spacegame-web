@@ -4,26 +4,27 @@ parameters:
   # unique name of the job
   job_name: deploy_terraform
   # friendly name of the job
-  display_name: Deploy app components with Terraform
-  # directory of main.tf (mandatory)
-  terraform_working_dir: './terraform'
-  # name of target enviroment deploying to (mandatory)
-  target_environment: 'test'
-  # name of variable group = target enviroment (manadatory)
-  variable_group_name: 'test'
-  # list of reviewers (mandatory)
-  email_reviewers: 'sten.rosendahl@alfalaval.com'
-  # Azure subscription
-  azure_subscription: 'Free Trial(4cc37679-12d4-439a-99cf-6072b19a3fee)'
+  display_name: 'Deploy with Terraform'
+  # build pipeline artifact name
+  artifact_name: 'SpaceGameWeb'
+  # pipeline variable group to use
+  variable_group_name: test_configuration
+
+variables:
+  - group: ${{parameters.variable_group_name}}
+  - name: terraform_working_dir
+    value: './terraform'
+  - name: project_id
+    value: '17c7e148-5259-4c50-a78a-221a3542498f' # 'Pipelines Demo'
+  - name: pipeline_id
+    value: '19' # 'tailspin-spacegame-web-build'
 
 jobs:
 - deployment: ${{ parameters.job_name }}
   displayName: ${{ parameters.display_name }}
   pool:
     vmImage: 'ubuntu-latest'
-  environment: ${{ parameters.target_environment }}
-  variables:
-  - group: ${{parameters.variable_group_name}} # (list the necessary variables to be set here)
+  environment: $(target_environment)
   strategy:
     runOnce:
       deploy:
@@ -31,10 +32,10 @@ jobs:
         - task: DownloadPipelineArtifact@2
           inputs:
             buildType: 'specific'
-            project: '17c7e148-5259-4c50-a78a-221a3542498f'
-            definition: '19'
+            project: $(project_id) 
+            definition: $(pipeline_id)
             buildVersionToDownload: 'latest'
-            artifactName: 'SpaceGameWeb'
+            artifactName: ${{ parameters.artifact_name }}
             itemPattern: '*.zip'
             targetPath: '$(Pipeline.Workspace)'
         - task: TerraformInstaller@0
@@ -43,27 +44,29 @@ jobs:
         - task: TerraformCLI@0
           inputs:
             command: 'init'
-            workingDirectory: '${{ parameters.terraform_working_dir }}'
+            workingDirectory: '$(terraform_working_dir)'
             commandOptions: '-backend-config=resource_group_name=$(RES_GRP) -backend-config=storage_account_name=$(STORAGE_ACCT) -backend-config=container_name=tf-statefiles -backend-config=key=$(state.key) -backend-config=access_key=$(ACCESS_KEY) -no-color -input=false'
             backendType: 'azurerm'
         - task: TerraformCLI@0
           inputs:
-            workingDirectory: '${{ parameters.terraform_working_dir }}'
+            workingDirectory: '$(terraform_working_dir)'
             command: 'validate'
             commandOptions: '-check-variables=false'
         - task: TerraformCLI@0
           inputs:
+            workingDirectory: '$(terraform_working_dir)'
             command: 'plan'
-            environmentServiceName: '${{ parameters.azure_subscription }}'
+            environmentServiceName: '$(azure_subscription)'
             commandOptions: '-out=tfplan -no-color -input=false -detailed-exitcode'
         - task: ManualIntervention@8
           inputs:
             instructions: 'Please review the Terraform preview in the pipeline logs and click Continue to approve.'
-            emailRecipients: '${{ parameters.email_reviewers }}'
+            emailRecipients: '$(email_reviewers)'
           condition: and(succeeded(), eq(variables['TERRAFORM_PLAN_HAS_CHANGES'], 'true'))
         - task: TerraformCLI@0
           inputs:
+            workingDirectory: '$(terraform_working_dir)'
             command: 'apply'
-            environmentServiceName: 'parameters.azure_subscription }}'
+            environmentServiceName: '$(azure_subscription)'
             commandOptions: '-input=false -auto-approve -lock=true'
           condition: succeeded()
