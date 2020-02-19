@@ -22,7 +22,7 @@ stages:
   jobs:
     - template: ./azure-pipelines-deploy-template.yml
       parameters:
-        job_name: deploy_solution_to_test
+        job_name: deploy_to_test
         target_environment: 'test'
         variable_group_name: test_configuration
 
@@ -32,7 +32,7 @@ stages:
   jobs:
     - template: ./azure-pipelines-deploy-template.yml
       parameters:
-        job_name: deploy_solution_to_preprod
+        job_name: deploy_to_preprod
         target_environment: 'preprod'
         variable_group_name: preprod_configuration
 
@@ -43,6 +43,6 @@ stages:
   jobs:
     - template: ./azure-pipelines-deploy-template.yml
       parameters:
-        job_name: deploy_solution_to_prod
+        job_name: deploy_to_prod
         target_environment: 'prod'
         variable_group_name: prod_configuration
