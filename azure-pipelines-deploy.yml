@@ -30,7 +30,7 @@ stages:
   displayName: Deploy to preprod
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   jobs:
-    - template: ./templates/azure-pipelines-deploy-template.yml
+    - template: ./azure-pipelines-deploy-template.yml
       parameters:
         job_name: deploy_solution_to_preprod
         target_environment: 'preprod'
@@ -41,7 +41,7 @@ stages:
   dependsOn: 'deploypreprod'
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   jobs:
-    - template: ./templates/azure-pipelines-deploy-template.yml
+    - template: ./azure-pipelines-deploy-template.yml
       parameters:
         job_name: deploy_solution_to_preprod
         target_environment: 'prod'
