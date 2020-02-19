@@ -1,12 +1,13 @@
 # Sample of multi-stage CD pipeline using YAML template and Terraform plugin for deployment
 
-trigger:
-  branches:
-    include:
-    - master
-  paths:
-    exclude:
-    - azure-pipelines.yml
+resources:
+  pipelines:
+  - pipeline: SpaceWebApp
+    source: tailspin-spacegame-web-build
+    trigger: 
+      branches:
+      - develop
+      - master
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -15,19 +16,33 @@ variables:
   buildConfiguration: 'Release'
 
 stages:
-- stage: deploytest'
+- stage: 'deploytest'
   displayName: Deploy to test
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
   jobs:
     - template: ./azure-pipelines-deploy-template.yml
       parameters:
         job_name: deploy_solution_to_test
         target_environment: 'test'
         variable_group_name: test_configuration
+
 - stage: 'deploypreprod'
-  dependsOn: 'deploytest'
+  displayName: Deploy to preprod
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
   jobs:
     - template: ./templates/azure-pipelines-deploy-template.yml
       parameters:
         job_name: deploy_solution_to_preprod
         target_environment: 'preprod'
         variable_group_name: preprod_configuration
+
+- stage: 'deployprod'
+  displayName: Deploy to prod
+  dependsOn: 'deploypreprod'
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  jobs:
+    - template: ./templates/azure-pipelines-deploy-template.yml
+      parameters:
+        job_name: deploy_solution_to_preprod
+        target_environment: 'prod'
+        variable_group_name: prod_configuration
