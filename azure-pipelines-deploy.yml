@@ -2,7 +2,7 @@
 
 resources:
   pipelines:
-  - pipeline: SpaceWebApp
+  - pipeline: 
     source: tailspin-spacegame-web-build
     trigger: 
       branches:
@@ -13,7 +13,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  buildConfiguration: 'Release'
+  appName: 'SpaceGameWeb'
 
 stages:
 - stage: 'deploytest'
@@ -23,7 +23,7 @@ stages:
     - template: ./azure-pipelines-deploy-template.yml
       parameters:
         job_name: deploy_to_test
-        target_environment: 'test'
+        display_name: Deploy $(appName) to test environment
         variable_group_name: test_configuration
 
 - stage: 'deploypreprod'
@@ -33,6 +33,7 @@ stages:
     - template: ./azure-pipelines-deploy-template.yml
       parameters:
         job_name: deploy_to_preprod
+        display_name: Deploy $(appName) to preprod environment
         target_environment: 'preprod'
         variable_group_name: preprod_configuration
 
@@ -44,5 +45,6 @@ stages:
     - template: ./azure-pipelines-deploy-template.yml
       parameters:
         job_name: deploy_to_prod
+        display_name: Deploy $(appName) to prod environment
         target_environment: 'prod'
         variable_group_name: prod_configuration
