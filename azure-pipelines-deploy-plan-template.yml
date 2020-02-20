@@ -21,10 +21,6 @@ variables:
   value: '19' # 'tailspin-spacegame-web-build'
 
 steps:
-# Not needed on hosted Ubuntu agents
-#- task: TerraformInstaller@0
-#  inputs:
-#    terraformVersion: '0.12.20'
 - task: TerraformCLI@0
   inputs:
     command: 'init'
@@ -41,13 +37,11 @@ steps:
     workingDirectory: '$(terraform_working_dir)'
     command: 'plan'
     environmentServiceName: '$(azure_subscription)'
-    commandOptions: '-out=tfplan -no-color -input=false -detailed-exitcode'
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: |
-      cd $(terraform_working_dir)
-      terraform show -nocolor terraform.tfplan > tfplan.txt
+    commandOptions: '-out=tfplan.out -no-color -input=false -detailed-exitcode'
+- Bash@1:
+  script: |
+    cd $(terraform_working_dir)
+    terraform show tfplan.out > tfplan.txt
 - task: PublishPipelineArtifact@1
   inputs:
     targetPath: '$(terraform_working_dir)/tfplan.txt'
