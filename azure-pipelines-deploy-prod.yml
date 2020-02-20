@@ -1,4 +1,13 @@
 # Sample of multi-stage CD pipeline using YAML template and Terraform plugin for deployment to preprod and prod
+
+resources:
+  pipelines:
+    - pipeline: 'build'
+      source: 'azure-pipelines'
+      trigger:
+        branches:
+          - master
+
 variables:
   appName: 'SpaceGameWeb'
 
@@ -8,7 +17,7 @@ pool:
 stages:
 - stage: 'tfplanpreprod'
   displayName: Plan terraform for preprod environment
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  condition: eq(resource.pipeline.build.SourceBranch, 'refs/heads/master')
   jobs:
     - template: ./azure-pipelines-deploy-plan-template.yml
       parameters:
