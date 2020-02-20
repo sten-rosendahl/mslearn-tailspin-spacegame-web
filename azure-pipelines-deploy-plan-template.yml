@@ -1,5 +1,4 @@
 # Terraform CD pipeline template
-
 parameters:
   # unique name of the job
   job_name: deploy_terraform
@@ -12,63 +11,39 @@ parameters:
   # pipeline variable group to use
   variable_group_name: test_configuration
 
-jobs:
-- deployment: ${{ parameters.job_name }}
-  displayName: ${{ parameters.display_name }}
-  pool:
-    vmImage: 'ubuntu-latest'
-  environment: $(target_environment)
-  variables:
-  - group: ${{parameters.variable_group_name}}
-  - name: terraform_working_dir
-    value: './terraform'
-  - name: project_id
-    value: '17c7e148-5259-4c50-a78a-221a3542498f' # 'Pipelines Demo'
-  - name: pipeline_id
-    value: '19' # 'tailspin-spacegame-web-build'
-  strategy:
-    runOnce:
-      deploy:
-        steps:
-        - task: DownloadPipelineArtifact@2
-          inputs:
-            buildType: 'specific'
-            project: $(project_id) 
-            definition: $(pipeline_id)
-            runBranch: ${{ parameters.build_branch }}
-            buildVersionToDownload: 'latest'
-            artifactName: ${{ parameters.artifact_name }}
-            itemPattern: '*.zip'
-            targetPath: '$(Pipeline.Workspace)'
-        - task: TerraformInstaller@0
-          inputs:
-            terraformVersion: '0.12.20'
-        - task: TerraformCLI@0
-          inputs:
-            command: 'init'
-            workingDirectory: '$(terraform_working_dir)'
-            commandOptions: '-backend-config=resource_group_name=$(RES_GRP) -backend-config=storage_account_name=$(STORAGE_ACCT) -backend-config=container_name=tf-statefiles -backend-config=key=$(state.key) -backend-config=access_key=$(ACCESS_KEY) -no-color -input=false'
-            backendType: 'azurerm'
-        - task: TerraformCLI@0
-          inputs:
-            workingDirectory: '$(terraform_working_dir)'
-            command: 'validate'
-            commandOptions: '-check-variables=false'
-        - task: TerraformCLI@0
-          inputs:
-            workingDirectory: '$(terraform_working_dir)'
-            command: 'plan'
-            environmentServiceName: '$(azure_subscription)'
-            commandOptions: '-out=tfplan -no-color -input=false -detailed-exitcode'
-        - task: ManualIntervention@8
-          inputs:
-            instructions: 'Please review the Terraform preview in the pipeline logs and click Continue to approve.'
-            emailRecipients: '$(email_reviewers)'
-          condition: and(succeeded(), eq(variables['TERRAFORM_PLAN_HAS_CHANGES'], 'true'))
-        - task: TerraformCLI@0
-          inputs:
-            workingDirectory: '$(terraform_working_dir)'
-            command: 'apply'
-            environmentServiceName: '$(azure_subscription)'
-            commandOptions: '-input=false -auto-approve -lock=true'
-          condition: succeeded()
+variables:
+- group: ${{parameters.variable_group_name}}
+- name: terraform_working_dir
+  value: './terraform'
+- name: project_id
+  value: '17c7e148-5259-4c50-a78a-221a3542498f' # 'Pipelines Demo'
+- name: pipeline_id
+  value: '19' # 'tailspin-spacegame-web-build'
+
+steps:
+- task: TerraformInstaller@0
+  inputs:
+    terraformVersion: '0.12.20'
+- task: TerraformCLI@0
+  inputs:
+    command: 'init'
+    workingDirectory: '$(terraform_working_dir)'
+    commandOptions: '-backend-config=resource_group_name=$(RES_GRP) -backend-config=storage_account_name=$(STORAGE_ACCT) -backend-config=container_name=tf-statefiles -backend-config=key=$(state.key) -backend-config=access_key=$(ACCESS_KEY) -no-color -input=false'
+    backendType: 'azurerm'
+- task: TerraformCLI@0
+  inputs:
+    workingDirectory: '$(terraform_working_dir)'
+    command: 'validate'
+    commandOptions: '-check-variables=false'
+- task: TerraformCLI@0
+  inputs:
+    workingDirectory: '$(terraform_working_dir)'
+    command: 'plan'
+    environmentServiceName: '$(azure_subscription)'
+    commandOptions: '-out=tfplan -no-color -input=false -detailed-exitcode'
+- task: TerraformCLI@0
+  inputs:
+    workingDirectory: '$(terraform_working_dir)'
+    command: 'show'
+    environmentServiceName: '$(azure_subscription)'
+    commandOptions: '-no-color'
