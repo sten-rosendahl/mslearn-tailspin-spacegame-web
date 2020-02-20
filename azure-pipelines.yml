@@ -5,8 +5,7 @@ trigger:
     - master
   paths:
     exclude:
-    - azure-pipelines-deploy.yml
-    - azure-pipelines-deploy-template.yml
+    - azure-pipelines-deploy*.yml
 pool:
   vmImage: 'ubuntu-16.04'
   demands:
