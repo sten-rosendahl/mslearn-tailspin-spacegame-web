@@ -1,18 +1,43 @@
 # Sample of multi-stage CD pipeline using YAML template and Terraform plugin for deployment
 variables:
-  appName: 'SpaceGameWeb'
+  - group: test_configuration
+  - name: appName
+    value: 'SpaceGameWeb'
 
 pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-- stage: 'deploytest'
-  displayName: Deploy to test
+- stage: 'plantest'
+  displayName: Plan terraform for test
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
   jobs:
-    - template: ./azure-pipelines-deploy-template.yml
+    - template: ./azure-pipelines-deploy-plan-template.yml
       parameters:
         job_name: deploy_to_test
+        display_name: Deploy $(appName) to test environment
+        build_branch: 'develop'
+        variable_group_name: test_configuration
+- stage: 'approvetest'
+  displayName: Approve terraform for test
+  dependsOn: approvetest
+  variables:
+  - group: test_configuration
+  jobs:
+    - job: approve
+      condition: eq($(TERRAFORM_PLAN_HAS_CHANGES), 'true')
+      steps:
+      - task: ManualIntervention@8
+        inputs: 
+          instructions: 'Please review the S(appName) deploy pipeline and click Continue to approve changes for the test environment.'
+          emailRecipients: '$(email_reviewers)'
+- stage: 'applytest'
+  displayName: Apply terraform to test
+  dependsOn: approvetest
+  jobs:
+    - template: ./azure-pipelines-deploy-apply-template.yml
+      parameters:
+        job_name: apply_to_test
         display_name: Deploy $(appName) to test environment
         build_branch: 'develop'
         variable_group_name: test_configuration
