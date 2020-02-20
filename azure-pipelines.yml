@@ -23,6 +23,11 @@ variables:
   NPM_MODULES: $(System.DefaultWorkingDirectory)/node_modules
 
 steps:
+- task: ManualIntervention@8
+  inputs: 
+    instructions: 'Test of maual intervention emails'
+    emailRecipients: 'sten.rosendahl@alfalaval.com'
+
 - task: Cache@2
   displayName: Cache NuGet packages
   condition: eq(variables['usePipelineCaching'], true)
