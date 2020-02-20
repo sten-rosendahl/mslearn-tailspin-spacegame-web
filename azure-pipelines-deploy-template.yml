@@ -7,6 +7,8 @@ parameters:
   display_name: 'Deploy with Terraform'
   # build pipeline artifact name
   artifact_name: 'SpaceGameWeb'
+  # build branch
+  build_branch: 'develop'
   # pipeline variable group to use
   variable_group_name: test_configuration
 
@@ -33,6 +35,7 @@ jobs:
             buildType: 'specific'
             project: $(project_id) 
             definition: $(pipeline_id)
+            runBranch: ${{ parameters.build_branch }}
             buildVersionToDownload: 'latest'
             artifactName: ${{ parameters.artifact_name }}
             itemPattern: '*.zip'
