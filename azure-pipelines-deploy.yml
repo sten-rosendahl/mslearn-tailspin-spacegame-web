@@ -1,66 +1,28 @@
 # Sample of multi-stage CD pipeline using YAML template and Terraform plugin for deployment
 variables:
-  - group: test_configuration
-  - name: appName
-    value: 'SpaceGameWeb'
+  appName: 'SpaceGameWeb'
 
 pool:
   vmImage: 'ubuntu-latest'
 
 stages:
-- stage: 'plantest'
-  displayName: Plan terraform for test
+- stage: 'tfplandev'
+  displayName: Plan terraform for dev environment
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
   jobs:
     - template: ./azure-pipelines-deploy-plan-template.yml
       parameters:
-        job_name: deploy_to_test
-        display_name: Deploy $(appName) to test environment
+        job_name: tf_plan_to_dev
+        display_name: Terraform plan $(appName) to dev environment
         build_branch: 'develop'
-        variable_group_name: test_configuration
-- stage: 'approvetest'
-  displayName: Approve terraform for test
-  dependsOn: approvetest
-  variables:
-  - group: test_configuration
-  jobs:
-    - job: approve
-      condition: eq($(TERRAFORM_PLAN_HAS_CHANGES), 'true')
-      steps:
-      - task: ManualIntervention@8
-        inputs: 
-          instructions: 'Please review the S(appName) deploy pipeline and click Continue to approve changes for the test environment.'
-          emailRecipients: '$(email_reviewers)'
-- stage: 'applytest'
-  displayName: Apply terraform to test
-  dependsOn: approvetest
+        variable_group_name: dev_configuration
+- stage: 'tfapplydev'
+  displayName: Apply terraform to dev
+  dependsOn: tfplandev
   jobs:
     - template: ./azure-pipelines-deploy-apply-template.yml
       parameters:
-        job_name: apply_to_test
-        display_name: Deploy $(appName) to test environment
+        job_name: apply_to_dev
+        display_name: Deploy $(appName) to dev environment
         build_branch: 'develop'
-        variable_group_name: test_configuration
-
-- stage: 'deploypreprod'
-  displayName: Deploy to preprod
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-  jobs:
-    - template: ./azure-pipelines-deploy-template.yml
-      parameters:
-        job_name: deploy_to_preprod
-        display_name: Deploy $(appName) to preprod environment
-        build_branch: 'master'
-        variable_group_name: preprod_configuration
-
-- stage: 'deployprod'
-  displayName: Deploy to prod
-  dependsOn: 'deploypreprod'
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-  jobs:
-    - template: ./azure-pipelines-deploy-template.yml
-      parameters:
-        job_name: deploy_to_prod
-        display_name: Deploy $(appName) to prod environment
-        build_branch: 'master'
-        variable_group_name: prod_configuration
+        variable_group_name: dev_configuration
