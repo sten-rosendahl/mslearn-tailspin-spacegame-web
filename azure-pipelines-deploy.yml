@@ -10,7 +10,8 @@ resources:
       - master
 
 variables:
-  appName: 'SpaceGameWeb'
+  - name: appName
+    value: 'SpaceGameWeb'
 
 pool:
   vmImage: 'ubuntu-latest'
