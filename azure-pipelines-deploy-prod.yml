@@ -1,0 +1,28 @@
+# Sample of multi-stage CD pipeline using YAML template and Terraform plugin for deployment to preprod and prod
+variables:
+  appName: 'SpaceGameWeb'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: 'tfplanpreprod'
+  displayName: Plan terraform for preprod environment
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+  jobs:
+    - template: ./azure-pipelines-deploy-plan-template.yml
+      parameters:
+        job_name: tf_plan_to_preprod
+        display_name: Terraform plan $(appName) to preprod environment
+        build_branch: 'master'
+        variable_group_name: preprod_configuration
+- stage: 'tfapplypreprod'
+  displayName: Apply terraform to preprod
+  dependsOn: tfplanpreprod
+  jobs:
+    - template: ./azure-pipelines-deploy-apply-template.yml
+      parameters:
+        job_name: apply_to_preprod
+        display_name: Terraform apply $(appName) to preprod environment
+        build_branch: 'master'
+        variable_group_name: preprod_configuration
