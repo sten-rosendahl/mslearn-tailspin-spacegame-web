@@ -2,7 +2,7 @@
 
 resources:
   pipelines:
-  - pipeline: 
+  - pipeline: build
     source: tailspin-spacegame-web-build
     trigger: 
       branches:
