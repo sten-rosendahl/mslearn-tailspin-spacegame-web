@@ -7,7 +7,7 @@ pool:
 
 stages:
 - stage: 'tfplandev'
-  displayName: Plan terraform for dev environment
+  displayName: Terraform plan for dev environment
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
   jobs:
     - template: ./azure-pipelines-deploy-plan-template.yml
