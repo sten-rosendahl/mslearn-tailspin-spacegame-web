@@ -1,14 +1,4 @@
 # Sample of multi-stage CD pipeline using YAML template and Terraform plugin for deployment
-
-resources:
-  pipelines:
-  - pipeline: build
-    source: tailspin-spacegame-web-build
-    trigger: 
-      branches:
-      - develop
-      - master
-
 variables:
   appName: 'SpaceGameWeb'
 
