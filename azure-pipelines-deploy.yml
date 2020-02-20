@@ -9,6 +9,9 @@ resources:
       - develop
       - master
 
+variables:
+  appName: 'SpaceGameWeb'
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -20,7 +23,7 @@ stages:
     - template: ./azure-pipelines-deploy-template.yml
       parameters:
         job_name: deploy_to_test
-        display_name: Deploy app to test environment
+        display_name: Deploy $(appName) to test environment
         variable_group_name: test_configuration
 
 - stage: 'deploypreprod'
@@ -30,7 +33,7 @@ stages:
     - template: ./azure-pipelines-deploy-template.yml
       parameters:
         job_name: deploy_to_preprod
-        display_name: Deploy app to preprod environment
+        display_name: Deploy $(appName) to preprod environment
         target_environment: 'preprod'
         variable_group_name: preprod_configuration
 
@@ -42,6 +45,6 @@ stages:
     - template: ./azure-pipelines-deploy-template.yml
       parameters:
         job_name: deploy_to_prod
-        display_name: Deploy app to prod environment
+        display_name: Deploy $(appName) to prod environment
         target_environment: 'prod'
         variable_group_name: prod_configuration
