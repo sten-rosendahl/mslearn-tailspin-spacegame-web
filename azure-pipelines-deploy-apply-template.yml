@@ -9,7 +9,7 @@ parameters:
   artifact_name: 'SpaceGameWeb'
   # build branch
   build_branch: 'develop'
-  # pipeline variable group to use
+  # variable group to use
   variable_group_name: dev_configuration
 
 jobs:
@@ -24,25 +24,36 @@ jobs:
     value: './terraform'
   - name: project_id
     value: '17c7e148-5259-4c50-a78a-221a3542498f' # 'Pipelines Demo'
-  - name: pipeline_id
+  - name: build_pipeline_id
     value: '19' # 'tailspin-spacegame-web-build'
+  - name: plan_pipeline_id
+    value: '24' # 'tailspin-spacegame-web-deploy-plan'
   strategy:
     runOnce:
       deploy:
         steps:
         - task: DownloadPipelineArtifact@2
+          # download build artifact
           inputs:
             buildType: 'specific'
             project: $(project_id) 
-            definition: $(pipeline_id)
+            definition: $(build_pipeline_id)
             runBranch: ${{ parameters.build_branch }}
             buildVersionToDownload: 'latest'
             artifactName: ${{ parameters.artifact_name }}
             itemPattern: '*.zip'
             targetPath: '$(Pipeline.Workspace)'
-        - task: TerraformInstaller@0
+        - task: DownloadPipelineArtifact@2
+          # download terraform plan
           inputs:
-            terraformVersion: '0.12.20'
+            buildType: 'specific'
+            project: $(project_id) 
+            definition: $(plan_pipeline_id)
+            runBranch: ${{ parameters.build_branch }}
+            buildVersionToDownload: 'latest'
+            artifactName: tfplan_out
+            itemPattern: '*.out'
+            targetPath: '$(Pipeline.Workspace)'
         - task: TerraformCLI@0
           inputs:
             command: 'init'
@@ -52,12 +63,6 @@ jobs:
         - task: TerraformCLI@0
           inputs:
             workingDirectory: '$(terraform_working_dir)'
-            command: 'validate'
-            commandOptions: '-check-variables=false'
-        - task: TerraformCLI@0
-          inputs:
-            workingDirectory: '$(terraform_working_dir)'
             command: 'apply'
             environmentServiceName: '$(azure_subscription)'
             commandOptions: '-input=false -auto-approve -lock=true'
-          condition: succeeded()
