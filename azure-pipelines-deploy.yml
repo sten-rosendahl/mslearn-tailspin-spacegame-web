@@ -14,6 +14,7 @@ stages:
       parameters:
         job_name: deploy_to_test
         display_name: Deploy $(appName) to test environment
+        build_branch: 'develop'
         variable_group_name: test_configuration
 
 - stage: 'deploypreprod'
@@ -24,7 +25,7 @@ stages:
       parameters:
         job_name: deploy_to_preprod
         display_name: Deploy $(appName) to preprod environment
-        target_environment: 'preprod'
+        build_branch: 'master'
         variable_group_name: preprod_configuration
 
 - stage: 'deployprod'
@@ -36,5 +37,5 @@ stages:
       parameters:
         job_name: deploy_to_prod
         display_name: Deploy $(appName) to prod environment
-        target_environment: 'prod'
+        build_branch: 'master'
         variable_group_name: prod_configuration
