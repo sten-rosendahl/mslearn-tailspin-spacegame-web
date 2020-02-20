@@ -16,17 +16,17 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   environment: $(target_environment)
+  variables:
+    - group: ${{parameters.variable_group_name}}
+    - name: terraform_working_dir
+      value: './terraform'
+    - name: project_id
+      value: '17c7e148-5259-4c50-a78a-221a3542498f' # 'Pipelines Demo'
+    - name: pipeline_id
+      value: '19' # 'tailspin-spacegame-web-build'
   strategy:
     runOnce:
       deploy:
-        variables:
-          - group: ${{parameters.variable_group_name}}
-          - name: terraform_working_dir
-            value: './terraform'
-          - name: project_id
-            value: '17c7e148-5259-4c50-a78a-221a3542498f' # 'Pipelines Demo'
-          - name: pipeline_id
-            value: '19' # 'tailspin-spacegame-web-build'
         steps:
         - task: DownloadPipelineArtifact@2
           inputs:
