@@ -1,0 +1,63 @@
+# Terraform apply template
+
+parameters:
+  # unique name of the job
+  job_name: deploy_terraform
+  # friendly name of the job
+  display_name: 'Deploy with Terraform'
+  # build pipeline artifact name
+  artifact_name: 'SpaceGameWeb'
+  # build branch
+  build_branch: 'develop'
+  # pipeline variable group to use
+  variable_group_name: dev_configuration
+
+jobs:
+- deployment: ${{ parameters.job_name }}
+  displayName: ${{ parameters.display_name }}
+  pool:
+    vmImage: 'ubuntu-latest'
+  environment: $(target_environment)
+  variables:
+  - group: ${{parameters.variable_group_name}}
+  - name: terraform_working_dir
+    value: './terraform'
+  - name: project_id
+    value: '17c7e148-5259-4c50-a78a-221a3542498f' # 'Pipelines Demo'
+  - name: pipeline_id
+    value: '19' # 'tailspin-spacegame-web-build'
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            buildType: 'specific'
+            project: $(project_id) 
+            definition: $(pipeline_id)
+            runBranch: ${{ parameters.build_branch }}
+            buildVersionToDownload: 'latest'
+            artifactName: ${{ parameters.artifact_name }}
+            itemPattern: '*.zip'
+            targetPath: '$(Pipeline.Workspace)'
+        - task: TerraformInstaller@0
+          inputs:
+            terraformVersion: '0.12.20'
+        - task: TerraformCLI@0
+          inputs:
+            command: 'init'
+            workingDirectory: '$(terraform_working_dir)'
+            commandOptions: '-backend-config=resource_group_name=$(RES_GRP) -backend-config=storage_account_name=$(STORAGE_ACCT) -backend-config=container_name=tf-statefiles -backend-config=key=$(state.key) -backend-config=access_key=$(ACCESS_KEY) -no-color -input=false'
+            backendType: 'azurerm'
+        - task: TerraformCLI@0
+          inputs:
+            workingDirectory: '$(terraform_working_dir)'
+            command: 'validate'
+            commandOptions: '-check-variables=false'
+        - task: TerraformCLI@0
+          inputs:
+            workingDirectory: '$(terraform_working_dir)'
+            command: 'apply'
+            environmentServiceName: '$(azure_subscription)'
+            commandOptions: '-input=false -auto-approve -lock=true'
+          condition: succeeded()
