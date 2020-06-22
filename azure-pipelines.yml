@@ -126,19 +126,22 @@ steps:
     script: |
       curl https://cdn.shiftleft.io/download/sl > $(Agent.HomeDirectory)/sl && chmod a+rx $(Agent.HomeDirectory)/sl
 
-- script: $(Agent.HomeDirectory)/sl analyze  --app Tailspin.SpaceGame.Web --js --cpg . -- --with-ProjectReference
+- script: $(Agent.HomeDirectory)/sl auth --org ${SHIFTLEFT_ORG_ID} --token ${SHIFTLEFT_ACCESS_TOKEN}
   displayName: "Perform ShiftLeft Scan for Javascript"
   continueOnError: "true"
   env:
     SHIFTLEFT_ORG_ID: $(SHIFTLEFT_ORG_ID)
     SHIFTLEFT_ACCESS_TOKEN: $(SHIFTLEFT_ACCESS_TOKEN)
 
-- script: $(Agent.HomeDirectory)/sl analyze  --app Tailspin.SpaceGame.Web --js --cpg . -- --with-ProjectReference
+- script: $(Agent.HomeDirectory)/sl analyze --force --app Tailspin.SpaceGame.Web --tag branch=$(Build.SourceBranchName) --csharp --dotnet-core Tailspin.SpaceGame.Web.sln
+  workingDirectory: '$(Build.SourcesDirectory)'
+  displayName: "Perform ShiftLeft Scan for C#"
+  continueOnError: "true"
+
+- script: $(Agent.HomeDirectory)/sl analyze  --app Tailspin.SpaceGame.Web --js --cpg .
   displayName: "Perform ShiftLeft Scan for Javascript"
   continueOnError: "true"
-  env:
-    SHIFTLEFT_ORG_ID: $(SHIFTLEFT_ORG_ID)
-    SHIFTLEFT_ACCESS_TOKEN: $(SHIFTLEFT_ACCESS_TOKEN)
+
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
   inputs:
