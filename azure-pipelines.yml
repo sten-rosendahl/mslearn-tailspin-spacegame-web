@@ -22,32 +22,32 @@ variables:
   NPM_MODULES: $(System.DefaultWorkingDirectory)/node_modules
 
 steps:
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: false || true
-  continueOnError: true
-- task: Cache@2
-  displayName: Cache NuGet packages
-  condition: eq(variables['usePipelineCaching'], true)
-  inputs:
-    key: 'nuget4 | "$(Agent.OS)" | "packages.lock.json"'
-    restoreKeys: |
-      nuget4 | "$(Agent.OS)"
-      nuget4
-    path: $(NUGET_PACKAGES)
-    cacheHitVar: NUGET_CACHE_RESTORED
+# - task: Bash@3
+#   inputs:
+#     targetType: 'inline'
+#     script: false || true
+#   continueOnError: true
+# - task: Cache@2
+#   displayName: Cache NuGet packages
+#   condition: eq(variables['usePipelineCaching'], true)
+#   inputs:
+#     key: 'nuget4 | "$(Agent.OS)" | "packages.lock.json"'
+#     restoreKeys: |
+#       nuget4 | "$(Agent.OS)"
+#       nuget4
+#     path: $(NUGET_PACKAGES)
+#     cacheHitVar: NUGET_CACHE_RESTORED
 
-- task: Cache@2
-  displayName: Cache npm modules
-  condition: eq(variables['usePipelineCaching'], true)
-  inputs:
-    key: 'npm | "$(Agent.OS)" | "package-lock.json"'
-    restoreKeys: |
-      npm | "$(Agent.OS)"
-      npm
-    path: $(NPM_MODULES)
-    cacheHitVar: NPM_CACHE_RESTORED
+# - task: Cache@2
+#   displayName: Cache npm modules
+#   condition: eq(variables['usePipelineCaching'], true)
+#   inputs:
+#     key: 'npm | "$(Agent.OS)" | "package-lock.json"'
+#     restoreKeys: |
+#       npm | "$(Agent.OS)"
+#       npm
+#     path: $(NPM_MODULES)
+#     cacheHitVar: NPM_CACHE_RESTORED
 
 - task: DotNetCoreInstaller@0
   displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
