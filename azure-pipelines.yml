@@ -117,19 +117,10 @@ steps:
   inputs:
     codeCoverageTool: 'cobertura'
     summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
-- task: CmdLine@2
-  displayName: 'Security static source code analysis'
-  condition: eq(variables['useStaticSecurityScanning'], true)
-  inputs:
-    script: |
-      echo Hello world
 
-- task: CmdLine@2
-  displayName: 'Open source scanning'
-  condition: eq(variables['useOpenSourceScanning'], true)
-  inputs:
-    script: |
-      echo Hello world
+- script: docker run -v "$(Build.SourcesDirectory):/app:cached" -v "$(Build.ArtifactStagingDirectory):/reports:cached" shiftleft/sast-scan scan --src /app --out_dir /reports/CodeAnalysisLogs
+  displayName: "Perform ShiftLeft Scan"
+  continueOnError: "true"
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish the project - $(buildConfiguration)'
