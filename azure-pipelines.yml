@@ -58,8 +58,8 @@ steps:
   displayName: 'Run npm install'
   condition: ne(variables['NPM_CACHE_RESTORED'], true)
   inputs:
-    customRegistry: 'useFeed'
-    customFeed: 'Pipelines Demo/ExternalProxies'
+    #customRegistry: 'useFeed'
+    #customFeed: 'Pipelines Demo/ExternalProxies'
     #customRegistry: 'useNpmrc' # good option to use the same
     verbose: true
 
@@ -79,11 +79,11 @@ steps:
   inputs:
     command: 'restore'
     projects: '**/*.csproj'
-    feedsToUse: 'select'
-    vstsFeed: 'Pipelines Demo/ExternalProxies'
-    includeNuGetOrg: false
+    #feedsToUse: 'select'
+    #vstsFeed: 'Pipelines Demo/ExternalProxies'
+    #includeNuGetOrg: false
     #feedsToUse: 'config'
-    nugetConfigPath: $(System.DefaultWorkingDirectory)/Tailspin.SpaceGame.Web/nuget.config
+    #nugetConfigPath: $(System.DefaultWorkingDirectory)/Tailspin.SpaceGame.Web/nuget.config
     restoreDirectory: $(NUGET_PACKAGES)
 
 - task: DotNetCoreCLI@2
