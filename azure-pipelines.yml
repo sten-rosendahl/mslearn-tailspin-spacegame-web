@@ -126,7 +126,7 @@ steps:
     script: |
       curl https://cdn.shiftleft.io/download/sl > $(Agent.HomeDirectory)/sl && chmod a+rx $(Agent.HomeDirectory)/sl
 
-- script: $(Agent.HomeDirectory)/sl auth --org ${SHIFTLEFT_ORG_ID} --token ${SHIFTLEFT_ACCESS_TOKEN}
+- script: $(Agent.HomeDirectory)/sl auth --org ${SHIFTLEFT_ORG_ID} --token ${SHIFTLEFT_ACCESS_TOKEN} --no-auto-update --no-diagnostic
   displayName: "Perform ShiftLeft Scan for Javascript"
   continueOnError: "true"
   env:
