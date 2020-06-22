@@ -20,6 +20,7 @@ variables:
   useOpenSourceScanning: true
   NUGET_PACKAGES: $(System.DefaultWorkingDirectory)/Tailspin.SpaceGame.Web/packages
   NPM_MODULES: $(System.DefaultWorkingDirectory)/node_modules
+  group: shiftleft-token
 
 steps:
 # - task: Bash@3
