@@ -126,11 +126,11 @@ steps:
     script: |
       curl https://cdn.shiftleft.io/download/sl > $(Agent.HomeDirectory)/sl && chmod a+rx $(Agent.HomeDirectory)/sl
 
-- script: sl analyze  --app Tailspin.SpaceGame.Web --csharp --cpg Tailspin.SpaceGame.Web.sln -- --with-ProjectReference
+- script: $(Agent.HomeDirectory)/sl analyze  --app Tailspin.SpaceGame.Web --csharp --cpg Tailspin.SpaceGame.Web.sln -- --with-ProjectReference
   displayName: "Perform ShiftLeft Scan for C#"
   continueOnError: "true"
 
-- script: sl analyze  --app Tailspin.SpaceGame.Web --js --cpg . -- --with-ProjectReference
+- script: $(Agent.HomeDirectory)/sl analyze  --app Tailspin.SpaceGame.Web --js --cpg . -- --with-ProjectReference
   displayName: "Perform ShiftLeft Scan for Javascript"
   continueOnError: "true"
 - task: DotNetCoreCLI@2
