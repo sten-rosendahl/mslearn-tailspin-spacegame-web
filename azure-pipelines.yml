@@ -119,6 +119,13 @@ steps:
     codeCoverageTool: 'cobertura'
     summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
 
+- task: CmdLine@2
+  displayName: Download ShiftLeft cli
+  inputs:
+    targetType: 'inline'
+    script: |
+      curl https://cdn.shiftleft.io/download/sl > $(Agent.HomeDirectory)/sl && chmod a+rx $(Agent.HomeDirectory)/sl
+
 - script: sl analyze  --app Tailspin.SpaceGame.Web --csharp --cpg Tailspin.SpaceGame.Web.sln -- --with-ProjectReference
   displayName: "Perform ShiftLeft Scan for C#"
   continueOnError: "true"
