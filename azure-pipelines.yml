@@ -119,18 +119,14 @@ steps:
     codeCoverageTool: 'cobertura'
     summaryFileLocation: '$(Build.SourcesDirectory)/**/coverage.cobertura.xml'
 
-- task: CmdLine@2
-  displayName: Download ShiftLeft cli
+- task: Bash@3
+  displayName: Download ShiftLeft CLI
   inputs:
     targetType: 'inline'
-    script: |
-      curl https://cdn.shiftleft.io/download/sl > $(Agent.HomeDirectory)/sl && chmod a+rx $(Agent.HomeDirectory)/sl
-
-# - script: $(Agent.HomeDirectory)/sl auth --org  --token "$(SHIFTLEFT_ACCESS_TOKEN)" --no-diagnostic
-#   displayName: "Authorize ShiftLeft"
+    script: 'curl https://cdn.shiftleft.io/download/sl > $(Agent.HomeDirectory)/sl && chmod a+rx $(Agent.HomeDirectory)/sl'
 
 - task: Bash@3
-  input:
+  inputs:
     targetType: 'inline'
     script: '$(Agent.HomeDirectory)/sl analyze --force --app Tailspin.SpaceGame.Web --tag branch=$(Build.SourceBranchName) --csharp --dotnet-core --cpg --no-diagnostic Tailspin.SpaceGame.Web.sln'
     workingDirectory: '$(Build.SourcesDirectory)'
@@ -141,7 +137,7 @@ steps:
     SHIFTLEFT_ACCESS_TOKEN: $(SHIFTLEFT_ACCESS_TOKEN)
 
 - task: Bash@3
-  input:
+  inputs:
     targetType: 'inline'
     script: '$(Agent.HomeDirectory)/sl analyze  --app Tailspin.SpaceGame.Web --js --cpg --no-diagnostic .'
   displayName: "Perform ShiftLeft Scan for Javascript"
