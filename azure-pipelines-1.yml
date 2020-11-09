@@ -7,8 +7,7 @@ stages:
   - deployment: DeployWeb
     displayName: deploy Web App
     pool:
-      vmImage: 'Ubuntu-16.04'
-    # Records deployment against bookings resource - Kubernetes namespace.
+      vmImage: 'Ubuntu-18.04'
     environment: 'Dev'
     strategy: 
       runOnce:
