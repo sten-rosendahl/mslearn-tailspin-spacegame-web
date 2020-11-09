@@ -1,20 +1,20 @@
 trigger:
 - none
 stages:
-  stage: Dev  
-    jobs:
-    - deployment: DeployWeb
-      displayName: deploy Web App
-      pool:
-        vmImage: 'Ubuntu-16.04'
-      # Records deployment against bookings resource - Kubernetes namespace.
-      environment: 'Dev'
-      strategy: 
-        runOnce:
-          deploy:
-            steps:
-            - task: Bash@3
-              inputs:
-                targetType: 'inline'
-                script: |
-                  echo 'Hello world'
+  stage: Dev
+  jobs:
+  - deployment: DeployWeb
+    displayName: deploy Web App
+    pool:
+      vmImage: 'Ubuntu-16.04'
+    # Records deployment against bookings resource - Kubernetes namespace.
+    environment: 'Dev'
+    strategy: 
+      runOnce:
+        deploy:
+          steps:
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                echo 'Hello world'
