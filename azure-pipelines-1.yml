@@ -1,7 +1,8 @@
 trigger:
 - none
+
 stages:
-  stage: Dev
+- stage: Dev
   jobs:
   - deployment: DeployWeb
     displayName: deploy Web App
