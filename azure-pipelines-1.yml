@@ -1,6 +1,6 @@
 trigger:
 - none
-
+stages:
   stage: Dev  
     jobs:
     - deployment: DeployWeb
@@ -13,3 +13,8 @@ trigger:
         runOnce:
           deploy:
             steps:
+            - task: Bash@3
+              inputs:
+                targetType: 'inline'
+                script: |
+                  echo 'Hello world'
