@@ -1,0 +1,20 @@
+trigger:
+- none
+
+stages:
+- stage: Dev
+  jobs:
+  - deployment: DeployWeb
+    displayName: deploy Web App
+    pool:
+      vmImage: 'Ubuntu-18.04'
+    environment: 'Prod'
+    strategy: 
+      runOnce:
+        deploy:
+          steps:
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: |
+                echo 'Hello world'
